@@ -12,6 +12,7 @@ async function updateImages(e) {
   showLoader();
 
   if (!query) {
+    hideLoadButton();
     iziToast.error({
       title: 'Error',
       message: 'Please enter a search query.',
@@ -31,7 +32,6 @@ refs.form.addEventListener('submit', async (e) => {
   page = 1;
   refs.gallery.innerHTML = '';
   await updateImages(e);
-  showLoadButton();
 });
 
 refs.loadMore.addEventListener('click', async (e) => {
