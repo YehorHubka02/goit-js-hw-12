@@ -53,6 +53,5 @@ export function hideLoadButton () {
 }
 
 export function imagesTemplate(arr) {
-  hideLoader();
   return arr.map(imageTemplate).join('');
 }

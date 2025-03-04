@@ -23,6 +23,7 @@ async function updateImages(e) {
   }
   total = await createImages(query, page, per_page);
   isMaxReached();
+  hideLoader();
 }
 
 refs.form.addEventListener('submit', async (e) => {
