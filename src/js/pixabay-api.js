@@ -54,7 +54,7 @@ export async function createImages(query, page, per_page) {
     hideLoader();
     iziToast.error({
       title: 'Error',
-      message: `❌ Error fetching images. Please try again!`,
+      message: `❌ Error fetching images. Please try again ${error}`,
       position: 'topRight',
       progressBar: false
     });
