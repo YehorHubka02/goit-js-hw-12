@@ -35,7 +35,11 @@ const lightbox = new SimpleLightbox('.gallery a', {
   captionDelay: 250,
 });
 
-
+export function renderHTML(data) {
+  const markup = imagesTemplate(data.hits);
+  refs.gallery.insertAdjacentHTML("beforeend", markup);
+  lightbox.refresh();
+}
 export function showLoader() {
   refs.loader.classList.remove('hidden');
 }

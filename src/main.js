@@ -1,12 +1,14 @@
+
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
 import { createImages, refs } from './js/pixabay-api';
-import { hideLoadButton, hideLoader, showLoadButton, showLoader } from './js/render-functions';
+import { hideLoadButton, hideLoader, renderHTML, showLoadButton, showLoader } from './js/render-functions';
 
 const per_page = 40;
 let page = 1;
 let query = "";
 let total = 0;
+let data = null;
 
 async function updateImages(e) {
   showLoader();
@@ -21,10 +23,37 @@ async function updateImages(e) {
     hideLoader();
     return;
   }
-  total = await createImages(query, page, per_page);
-  isMaxReached();
-  hideLoader();
-}
+  try {
+    data = await createImages(query, page, per_page);
+  } catch (error) {
+    hideLoader();
+    iziToast.error({
+      title: 'Error',
+      message: `❌ Error fetching images. Please try again ${error}`,
+      position: 'topRight',
+      progressBar: false
+    });
+    iziToast.error({ title: 'Error', message: 'Failed to fetch images. Try again later!' });
+  }
+  finally {
+    if (data.hits.length === 0) {
+      iziToast.info({
+        title: 'No Results',
+        message: `No images found for your search.`,
+        position: 'topRight',
+        progressBar: false
+      });
+    } else {
+      refs.input.value = '';
+      renderHTML(data);
+      total = data.total;
+     isMaxReached();
+    }
+    
+  }
+    hideLoader();
+  }
+
 
 refs.form.addEventListener('submit', async (e) => {
   e.preventDefault();
