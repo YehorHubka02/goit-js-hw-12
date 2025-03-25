@@ -35,6 +35,10 @@ const lightbox = new SimpleLightbox('.gallery a', {
   captionDelay: 250,
 });
 
+export function flushGallery() {
+    refs.gallery.innerHTML = '';
+}
+
 export function renderHTML(data) {
   const markup = imagesTemplate(data.hits);
   refs.gallery.insertAdjacentHTML("beforeend", markup);

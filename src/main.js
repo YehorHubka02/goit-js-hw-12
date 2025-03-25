@@ -2,7 +2,7 @@
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
 import { createImages, refs } from './js/pixabay-api';
-import { hideLoadButton, hideLoader, renderHTML, showLoadButton, showLoader } from './js/render-functions';
+import { hideLoadButton, hideLoader, renderHTML, showLoadButton, showLoader, flushGallery } from './js/render-functions';
 
 const per_page = 40;
 let page = 1;
@@ -13,20 +13,9 @@ let data = null;
 async function updateImages(e) {
   showLoader();
 
-  if (!query) {
-    hideLoadButton();
-    iziToast.error({
-      title: 'Error',
-      message: 'Please enter a search query.',
-      position: 'topRight',
-    });
-    hideLoader();
-    return;
-  }
   try {
     data = await createImages(query, page, per_page);
   } catch (error) {
-    hideLoader();
     iziToast.error({
       title: 'Error',
       message: `❌ Error fetching images. Please try again ${error}`,
@@ -54,19 +43,34 @@ async function updateImages(e) {
     hideLoader();
   }
 
+  function isSearchExist() {
+  if (!query) {
+    hideLoadButton();
+    iziToast.error({
+      title: 'Error',
+      message: 'Please enter a search query.',
+      position: 'topRight',
+    });
+    hideLoader();
+    return 0;
+  }
+  return 1;
+}
 
 refs.form.addEventListener('submit', async (e) => {
   e.preventDefault();
   hideLoadButton();
   query = e.target.elements.input.value.trim();
   page = 1;
-  refs.gallery.innerHTML = '';
+  if (!isSearchExist()) return;
+  flushGallery();
   await updateImages(e);
 });
 
 refs.loadMore.addEventListener('click', async (e) => {
   e.preventDefault();
   page += 1;
+  if (!isSearchExist()) return;
   await updateImages(e);
   scroll();
 });
